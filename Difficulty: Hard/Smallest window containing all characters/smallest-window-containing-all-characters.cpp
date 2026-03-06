@@ -1,42 +1,44 @@
 class Solution {
-public:
-    string smallestWindow(string &s, string &p) {
-        if (p.size() > s.size()) return "";
-
-        vector<int> freqP(26, 0), freqS(26, 0);
-        for (char c : p) freqP[c - 'a']++;
-
-        int required = p.size(); // total characters needed (including duplicates)
-        int formed = 0;          // total characters matched
-        int left = 0, minLen = INT_MAX, startIdx = -1;
-
-        for (int right = 0; right < (int)s.size(); right++) {
-            char c = s[right];
-            freqS[c - 'a']++;
-
-            // If adding this character contributes to matching requirement
-            if (freqS[c - 'a'] <= freqP[c - 'a']) {
-                formed++;
-            }
-
-            // Try to shrink window when valid
-            while (formed == required) {
-                if (right - left + 1 < minLen) {
-                    minLen = right - left + 1;
-                    startIdx = left;
+  public:
+    string minWindow(string &s, string &p) {
+        
+        int n = s.size();
+        if(p.size() > n) return "";
+        
+        unordered_map<char,int> mp;
+        
+        for(char c : p) mp[c]++;
+        
+        int left = 0, right = 0;
+        int required = p.size();  
+        
+        int minLen = INT_MAX;
+        int startIndex = 0;
+        
+        while(right < n) {
+            
+            if(mp[s[right]] > 0)
+                required--;
+            
+            mp[s[right]]--;
+            right++;
+            while(required == 0) {
+                
+                if(right - left < minLen) {
+                    minLen = right - left;
+                    startIndex = left;
                 }
-
-                // Shrink from left
-                char leftChar = s[left];
-                freqS[leftChar - 'a']--;
-                if (freqS[leftChar - 'a'] < freqP[leftChar - 'a']) {
-                    formed--; // lost a needed char
-                }
+                
+                mp[s[left]]++;
+                
+                if(mp[s[left]] > 0)
+                    required++;
+                
                 left++;
             }
         }
-
-        if (startIdx == -1) return "";
-        return s.substr(startIdx, minLen);
+        
+        if(minLen == INT_MAX) return "";
+        return s.substr(startIndex, minLen);
     }
 };
