@@ -1,20 +1,25 @@
 class Solution {
-public:
+  public:
     string largestSwap(string &s) {
         int n = s.size();
-        vector<int> last(10, -1);
-        for (int i = 0; i < n; ++i) last[s[i] - '0'] = i; // last index of each digit
+        
+        int maxIdx = n - 1;
+        int left = -1, right = -1;
 
-        for (int i = 0; i < n; ++i) {
-            int cur = s[i] - '0';
-            // try to find a bigger digit (9 down to cur+1) that appears to the right
-            for (int d = 9; d > cur; --d) {
-                if (last[d] > i) {
-                    swap(s[i], s[last[d]]);
-                    return s; // at most one swap
-                }
+        for(int i = n - 1; i >= 0; i--) {
+            if(s[i] > s[maxIdx]) {
+                maxIdx = i;
+            }
+            else if(s[i] < s[maxIdx]) {
+                left = i;
+                right = maxIdx;
             }
         }
+
+        if(left != -1) {
+            swap(s[left], s[right]);
+        }
+
         return s;
     }
 };
