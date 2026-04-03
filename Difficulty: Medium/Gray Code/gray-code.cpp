@@ -1,0 +1,25 @@
+class Solution {
+  public:
+    vector<string> graycode(int n) {
+      vector<string> prev={"0", "1"};
+      if(n==1) return prev;
+      
+      for(int i=2; i<=n; i++){
+        vector<string> next;
+        int pn=prev.size();
+        
+        for(int j=0; j<pn; j++){
+          next.push_back("0" + prev[j]);    
+        }        
+        for(int j=pn-1; j>=0; j--){
+          next.push_back("1" + prev[j]);    
+        }
+        
+        prev = next;
+              
+      }
+      
+      return prev;
+    }
+};
+
